@@ -11,9 +11,12 @@ import {
   Archivo_500Medium,
   Archivo_600SemiBold,
 } from "@expo-google-fonts/archivo";
+import { StatusBar } from "react-native";
 
 import { Home } from "./src/screens/Home";
 import theme from "./src/styles/theme";
+import { CarDetails } from "./src/screens/CarDetails";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,7 +32,10 @@ export default function App() {
   }
   return (
     <ThemeProvider theme={theme}>
-      <Home />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+        <CarDetails />
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }
