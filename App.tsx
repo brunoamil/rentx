@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import React from "react";
 import AppLoading from "expo-app-loading";
 import { ThemeProvider } from "styled-components";
@@ -13,12 +14,10 @@ import {
 } from "@expo-google-fonts/archivo";
 import { StatusBar } from "react-native";
 
-import { Home } from "./src/screens/Home";
 import theme from "./src/styles/theme";
-import { CarDetails } from "./src/screens/CarDetails";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Scheduling } from "./src/screens/Scheduling";
-import { SchedulingDetails } from "./src/screens/SchedulingDetails";
+
+import { Routes } from "./src/routes";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -36,7 +35,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-        <SchedulingDetails />
+        <Routes />
       </GestureHandlerRootView>
     </ThemeProvider>
   );
