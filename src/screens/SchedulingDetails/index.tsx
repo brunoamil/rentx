@@ -6,7 +6,7 @@ import { useNavigation, CommonActions } from "@react-navigation/native";
 
 import { BackButton } from "../../components/BackButton";
 import { ImageSlider } from "../../components/ImageSlider";
-import { Acessory } from "../../components/Acessory";
+import { Accessory } from "../../components/Acessory";
 import { Button } from "../../components/Button";
 
 import speedSVG from "../../assets/speed.svg";
@@ -79,12 +79,12 @@ export function SchedulingDetails() {
           </Rent>
         </Details>
         <Acessories>
-          <Acessory name="380km/h" icon={speedSVG} />
-          <Acessory name="3.2s" icon={accelerationSVG} />
-          <Acessory name="800 HP" icon={forceSVG} />
-          <Acessory name="Gasolina" icon={gasolineSVG} />
-          <Acessory name="Auto" icon={exchangeSVG} />
-          <Acessory name="2 pessoas" icon={peopleSVG} />
+          <Accessory name="380km/h" icon={speedSVG} />
+          <Accessory name="3.2s" icon={accelerationSVG} />
+          <Accessory name="800 HP" icon={forceSVG} />
+          <Accessory name="Gasolina" icon={gasolineSVG} />
+          <Accessory name="Auto" icon={exchangeSVG} />
+          <Accessory name="2 pessoas" icon={peopleSVG} />
         </Acessories>
         <RentalPeriod>
           <CalendarIcon>
