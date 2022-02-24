@@ -10,12 +10,7 @@ import { ImageSlider } from "../../components/ImageSlider";
 import { Accessory } from "../../components/Acessory";
 import { Button } from "../../components/Button";
 
-import speedSVG from "../../assets/speed.svg";
-import accelerationSVG from "../../assets/acceleration.svg";
-import forceSVG from "../../assets/force.svg";
-import gasolineSVG from "../../assets/gasoline.svg";
-import exchangeSVG from "../../assets/exchange.svg";
-import peopleSVG from "../../assets/people.svg";
+import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
 
 import {
   Container,
@@ -79,7 +74,7 @@ export function CarDetails() {
             <Accessory
               key={accessory.type}
               name={accessory.name}
-              icon={speedSVG}
+              icon={getAccessoryIcon(accessory.type)}
             />
           ))}
         </Accessories>
