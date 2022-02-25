@@ -23,6 +23,7 @@ import { Car } from "../../components/Car";
 
 import { Container, Header, HeaderContent, TotalCars, CarList } from "./styles";
 import { Loading } from "../../components/Loading";
+import { LoadingAnimation } from "../../components/LoadingAnimation";
 
 export function Home() {
   const [cars, setCars] = useState<CarDTO[]>([]);
@@ -110,7 +111,7 @@ export function Home() {
         </HeaderContent>
       </Header>
       {loading ? (
-        <Loading />
+        <LoadingAnimation />
       ) : (
         <CarList
           data={cars}
