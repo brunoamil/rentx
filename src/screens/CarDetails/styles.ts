@@ -13,12 +13,12 @@ export const Header = styled.Text`
   justify-content: space-between;
   align-items: center;
   position: absolute;
-  margin-top: ${getStatusBarHeight() + 35}px;
+  margin-top: ${getStatusBarHeight() + 5}px;
   margin-left: 24px;
 `;
 
 export const CardImages = styled.View`
-  margin-top: ${getStatusBarHeight() + 1}px;
+  margin-top: ${getStatusBarHeight() + 60}px;
 `
 export const Content = styled.ScrollView.attrs({
   contentContainerStyle: {
