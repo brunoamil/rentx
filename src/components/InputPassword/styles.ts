@@ -4,7 +4,6 @@ import { TextInput } from 'react-native';
 
 export const Container = styled.View`
   flex-direction: row;
-  margin-bottom: 8px;
 `;
 
 export const IconContainer = styled.View`
@@ -14,7 +13,6 @@ export const IconContainer = styled.View`
   align-items: center;
   margin-right: 2px;
   background-color: ${({ theme }) => theme.colors.background_secondary};
-
 `;
 
 export const InputText = styled(TextInput)`
@@ -25,5 +23,6 @@ export const InputText = styled(TextInput)`
   font-size: ${RFValue(15)}px;
   padding: 0 23px;
 `;
+
 
 
