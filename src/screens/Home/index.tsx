@@ -107,7 +107,11 @@ export function Home() {
       <Header>
         <HeaderContent>
           <LogoSVG width={RFValue(108)} height={RFValue(12)} />
-          {!loading && <TotalCars>Total de {cars.length} Carros</TotalCars>}
+          {!loading && (
+            <TotalCars>
+              Total de {cars.length} Carros na lista disponíveis
+            </TotalCars>
+          )}
         </HeaderContent>
       </Header>
       {loading ? (
