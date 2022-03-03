@@ -4,11 +4,18 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
+import * as Yup from "yup";
+import {
+  useNavigation,
+  CommonActions,
+  useRoute,
+} from "@react-navigation/native";
 
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
-import { InputPassword } from "../components/InputPassword";
+import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { InputPassword } from "../../components/InputPassword";
 
 import { Container, Header, Form, Title, Subtitle, Footer } from "./styles";
 
@@ -17,6 +24,35 @@ export function SignIn() {
   const [password, setPassword] = useState("");
 
   const theme = useTheme();
+  const navigation = useNavigation();
+
+  async function handleSignIn() {
+    try {
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .required("Email obrigatório")
+          .email("Digite um email válido"),
+        password: Yup.string().required("A senha é obrigatória"),
+      });
+
+      await schema.validate({ email, password });
+      Alert.alert("TUDO CERTO");
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        Alert.alert("Opa", error.message);
+      } else {
+        Alert.alert("Erro na autenticacao", "verifique o erro");
+      }
+    }
+  }
+
+  function handleNewAccount() {
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: "SignUpFirstStep",
+      })
+    );
+  }
   return (
     <KeyboardAvoidingView behavior="position" enabled>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -48,16 +84,16 @@ export function SignIn() {
           <Footer>
             <Button
               title="Login"
-              onPress={() => {}}
-              enabled={false}
+              onPress={handleSignIn}
+              enabled={true}
               loading={false}
             />
             <Button
               title="Criar conta gratuita"
               color={theme.colors.background_secondary}
               light
-              onPress={() => {}}
-              enabled={false}
+              onPress={handleNewAccount}
+              enabled={true}
               loading={false}
             />
           </Footer>
