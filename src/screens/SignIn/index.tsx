@@ -18,11 +18,13 @@ import { Input } from "../../components/Input";
 import { InputPassword } from "../../components/InputPassword";
 
 import { Container, Header, Form, Title, Subtitle, Footer } from "./styles";
+import { useAuth } from "../../hooks/auth";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { signIn } = useAuth();
   const theme = useTheme();
   const navigation = useNavigation();
 
@@ -37,6 +39,7 @@ export function SignIn() {
 
       await schema.validate({ email, password });
       Alert.alert("TUDO CERTO");
+      signIn({ email, password });
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert("Opa", error.message);

@@ -22,11 +22,15 @@ import {
   Form,
   FormTitle,
 } from "./styles";
+import { useAuth } from "../../../hooks/auth";
 
 export function SignUpFirstStep() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [driverLicense, setDriverLicense] = useState("");
+
+  const { user } = useAuth();
+  console.log("user", user);
 
   const navigation = useNavigation();
   function handleBack() {
