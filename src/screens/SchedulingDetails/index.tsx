@@ -97,7 +97,12 @@ export function SchedulingDetails() {
       .then(() =>
         navigation.dispatch(
           CommonActions.navigate({
-            name: "SchedulingComplete",
+            name: "Confirmation",
+            params: {
+              nextScreenRoute: "Home",
+              title: "Carro alugado",
+              message: `Agora você só precisa ir\n até a concessionária da RENTX\n pegar seu automóvel`,
+            },
           })
         )
       )

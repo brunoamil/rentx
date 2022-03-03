@@ -1,6 +1,10 @@
 import React from "react";
 import { useWindowDimensions } from "react-native";
-import { useNavigation, CommonActions } from "@react-navigation/native";
+import {
+  useNavigation,
+  CommonActions,
+  useRoute,
+} from "@react-navigation/native";
 
 import { ConfirmButton } from "../../components/ConfirmButton";
 
@@ -9,15 +13,23 @@ import DoneSVG from "../../assets/done.svg";
 
 import { Container, Content, Title, Message, Footer } from "./styles";
 
-export function SchedulingComplete() {
+interface Params {
+  title: string;
+  message: string;
+  nextScreenRoute: string;
+}
+
+export function Confirmation() {
   const { width } = useWindowDimensions();
 
   const navigation = useNavigation();
+  const route = useRoute();
+  const { title, message, nextScreenRoute } = route.params as Params;
 
   function handleConfirm() {
     navigation.dispatch(
       CommonActions.navigate({
-        name: "Home",
+        name: nextScreenRoute,
       })
     );
   }
@@ -27,12 +39,8 @@ export function SchedulingComplete() {
       <LogoSVG width={width} />
       <Content>
         <DoneSVG width={80} height={80} />
-        <Title>Carro alugado!</Title>
-        <Message>
-          Agora você só precisa ir {"\n"}
-          até a concessionária da RENTX {"\n"}
-          pegar seu carro.
-        </Message>
+        <Title>{title}</Title>
+        <Message>{message}</Message>
       </Content>
       <Footer>
         <ConfirmButton title="OK" onPress={handleConfirm} />
