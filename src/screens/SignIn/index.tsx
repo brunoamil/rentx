@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "styled-components";
 import {
   KeyboardAvoidingView,
@@ -19,6 +19,8 @@ import { InputPassword } from "../../components/InputPassword";
 
 import { Container, Header, Form, Title, Subtitle, Footer } from "./styles";
 import { useAuth } from "../../hooks/auth";
+
+// import { database } from "../../database";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -56,6 +58,16 @@ export function SignIn() {
       })
     );
   }
+
+  // useEffect(() => {
+  //   async function loadData() {
+  //     const userCollection = database.get("users");
+  //     const users = await userCollection.query().fetch();
+  //     console.log("users", users);
+  //   }
+  //   loadData();
+  // }, []);
+
   return (
     <KeyboardAvoidingView behavior="position" enabled>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
