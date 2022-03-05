@@ -8,6 +8,8 @@ import PeopleSVG from "../assets/people.svg";
 
 import { Home } from "../screens/Home";
 import { MyCars } from "../screens/MyCars";
+import { Profile } from "../screens/Profile";
+
 import { AppStackRoutes } from "./app.stack.routes";
 import { Platform } from "react-native";
 
@@ -31,7 +33,7 @@ export function AppTabRoutes() {
       }}
     >
       <Screen
-        name="Home"
+        name="HomeTab"
         component={AppStackRoutes}
         options={{
           tabBarIcon: ({ color }) => (
@@ -41,7 +43,7 @@ export function AppTabRoutes() {
       />
       <Screen
         name="Profile"
-        component={Home}
+        component={MyCars}
         options={{
           tabBarIcon: ({ color }) => (
             <CarSVG width={24} height={24} fill={color} />
@@ -50,7 +52,7 @@ export function AppTabRoutes() {
       />
       <Screen
         name="MyCars"
-        component={MyCars}
+        component={Profile}
         options={{
           tabBarIcon: ({ color }) => (
             <PeopleSVG width={24} height={24} fill={color} />
