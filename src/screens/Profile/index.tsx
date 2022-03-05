@@ -3,11 +3,15 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "styled-components";
 import { Feather } from "@expo/vector-icons";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import * as ImagePicker from "expo-image-picker";
+import * as Yup from "yup";
+
 import { BackButton } from "../../components/BackButton";
 import { Input } from "../../components/Input";
 
@@ -28,11 +32,15 @@ import {
 } from "./styles";
 import { InputPassword } from "../../components/InputPassword";
 import { useAuth } from "../../hooks/auth";
+import { Button } from "../../components/Button";
 
 export function Profile() {
+  const { user, signOut, updatedUser } = useAuth();
   const [option, setOption] = useState<"dataEdit" | "passwordEdit">("dataEdit");
+  const [avatar, setAvatar] = useState(user.avatar);
+  const [name, setName] = useState(user.name);
+  const [driverLicense, setDriverLicense] = useState(user.driver_license);
 
-  const { user } = useAuth();
   const theme = useTheme();
   const navigation = useNavigation();
 
@@ -40,10 +48,69 @@ export function Profile() {
     navigation.goBack();
   }
 
-  function handleSignOut() {}
+  function handleSignOut() {
+    Alert.alert(
+      "Tem certeza?",
+      "Se você sair, irá precisar de internet se quiser conectar novamente.",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => {},
+        },
+        {
+          text: "Sair",
+          onPress: () => signOut(),
+        },
+      ]
+    );
+  }
 
   function handleOptionChange(optionSelected: "dataEdit" | "passwordEdit") {
     setOption(optionSelected);
+  }
+
+  async function handleAvatarSelect() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (result.cancelled) {
+      return;
+    }
+    if (result.uri) {
+      setAvatar(result.uri);
+    }
+  }
+
+  async function handleProfileUpdat() {
+    try {
+      const schema = Yup.object().shape({
+        driverLicense: Yup.string().required("CNH é obrigatória"),
+        name: Yup.string().required("Nome é obrigatório"),
+      });
+      const data = { name, driverLicense };
+      await schema.validate(data);
+      await updatedUser({
+        id: user.id,
+        user_id: user.user_id,
+        email: user.email,
+        name,
+        driver_license: driverLicense,
+        avatar,
+        token: user.token,
+      });
+
+      Alert.alert("Perfil atualizado");
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        Alert.alert("Opa", error.message);
+      } else {
+        Alert.alert("Não foi possivel atualizar os dados.");
+      }
+    }
   }
   return (
     <KeyboardAvoidingView behavior="position" enabled>
@@ -58,12 +125,14 @@ export function Profile() {
               </LogoutButton>
             </HeaderTop>
             <PhotoContainer>
-              <Photo
-                source={{
-                  uri: "https://avatars.githubusercontent.com/u/8558185?v=4",
-                }}
-              />
-              <PhotoButton onPress={() => {}}>
+              {!!avatar && (
+                <Photo
+                  source={{
+                    uri: avatar,
+                  }}
+                />
+              )}
+              <PhotoButton onPress={handleAvatarSelect}>
                 <Feather name="camera" size={24} color={theme.colors.shape} />
               </PhotoButton>
             </PhotoContainer>
@@ -92,6 +161,7 @@ export function Profile() {
                   placeholder="Nome"
                   autoCorrect={false}
                   defaultValue={user.name}
+                  onChangeText={setName}
                 />
                 <Input
                   iconName="mail"
@@ -103,6 +173,7 @@ export function Profile() {
                   placeholder="CNH"
                   keyboardType="numeric"
                   defaultValue={user.driver_license}
+                  onChangeText={setDriverLicense}
                 />
               </Section>
             ) : (
@@ -112,6 +183,7 @@ export function Profile() {
                 <InputPassword iconName="lock" placeholder="Repetir senha" />
               </Section>
             )}
+            <Button title="Salvar alterações" onPress={handleProfileUpdat} />
           </Content>
         </Container>
       </TouchableWithoutFeedback>
