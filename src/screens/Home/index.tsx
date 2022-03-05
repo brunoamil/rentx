@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation, CommonActions } from "@react-navigation/native";
-import { StatusBar, StyleSheet, BackHandler } from "react-native";
+import { StatusBar, StyleSheet, BackHandler, Alert } from "react-native";
 import { RectButton, PanGestureHandler } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,6 +11,7 @@ import Animated, {
   useAnimatedGestureHandler,
   withSpring,
 } from "react-native-reanimated";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const ButtonAnimated = Animated.createAnimatedComponent(RectButton);
 
@@ -28,8 +29,10 @@ import { LoadingAnimation } from "../../components/LoadingAnimation";
 export function Home() {
   const [cars, setCars] = useState<CarDTO[]>([]);
   const [loading, setLoading] = useState(true);
+
   const navigation = useNavigation();
   const theme = useTheme();
+  const netInfo = useNetInfo();
 
   const positionY = useSharedValue(0);
   const positionX = useSharedValue(0);
@@ -104,6 +107,13 @@ export function Home() {
   //     return true;
   //   });
   // }, []);
+  useEffect(() => {
+    if (netInfo.isConnected) {
+      Alert.alert("Voce tem conexão");
+    } else {
+      Alert.alert("Voce sem conexao");
+    }
+  }, [netInfo.isConnected]);
   return (
     <Container>
       <StatusBar
