@@ -101,30 +101,12 @@ export function Home() {
 
   useEffect(() => {
     let isMounted = true;
-    /*
-      Buscando os dados direto na API
-   
-    async function fetchCars() {
-      try {
-        const response = await api.get("cars");
-        if (isMounted) {
-          setCars(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    }
-    fetchCars();*/
 
     async function fetchCars() {
       try {
         const carCollection = database.get<ModelCar>("cars");
         const cars = await carCollection.query().fetch();
-        console.log("CAAAARS", cars);
+
         if (isMounted) {
           setCars(cars);
         }
@@ -136,6 +118,7 @@ export function Home() {
         }
       }
     }
+
     fetchCars();
     return () => {
       isMounted = false;

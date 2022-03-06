@@ -11,7 +11,7 @@ import { Feather } from "@expo/vector-icons";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import * as ImagePicker from "expo-image-picker";
 import * as Yup from "yup";
-
+import { useNetInfo } from "@react-native-community/netinfo";
 import { BackButton } from "../../components/BackButton";
 import { Input } from "../../components/Input";
 
@@ -41,6 +41,7 @@ export function Profile() {
   const [name, setName] = useState(user.name);
   const [driverLicense, setDriverLicense] = useState(user.driver_license);
 
+  const netInfo = useNetInfo();
   const theme = useTheme();
   const navigation = useNavigation();
 
@@ -66,7 +67,11 @@ export function Profile() {
   }
 
   function handleOptionChange(optionSelected: "dataEdit" | "passwordEdit") {
-    setOption(optionSelected);
+    if (!netInfo.isConnected === true && optionSelected === "passwordEdit") {
+      Alert.alert("Verifique sua conexao");
+    } else {
+      setOption(optionSelected);
+    }
   }
 
   async function handleAvatarSelect() {
@@ -85,14 +90,16 @@ export function Profile() {
     }
   }
 
-  async function handleProfileUpdat() {
+  async function handleProfileUpdate() {
     try {
       const schema = Yup.object().shape({
         driverLicense: Yup.string().required("CNH é obrigatória"),
         name: Yup.string().required("Nome é obrigatório"),
       });
+
       const data = { name, driverLicense };
       await schema.validate(data);
+
       await updatedUser({
         id: user.id,
         user_id: user.user_id,
@@ -103,12 +110,12 @@ export function Profile() {
         token: user.token,
       });
 
-      Alert.alert("Perfil atualizado");
+      Alert.alert("Perfil atualizado!");
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert("Opa", error.message);
       } else {
-        Alert.alert("Não foi possivel atualizar os dados.");
+        Alert.alert("Não foi possível atualizar o perfil");
       }
     }
   }
@@ -183,7 +190,7 @@ export function Profile() {
                 <InputPassword iconName="lock" placeholder="Repetir senha" />
               </Section>
             )}
-            <Button title="Salvar alterações" onPress={handleProfileUpdat} />
+            <Button title="Salvar alterações" onPress={handleProfileUpdate} />
           </Content>
         </Container>
       </TouchableWithoutFeedback>
