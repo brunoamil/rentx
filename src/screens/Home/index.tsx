@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation, CommonActions } from "@react-navigation/native";
-import { StatusBar, StyleSheet, BackHandler, Alert } from "react-native";
+import { Button, StatusBar, StyleSheet } from "react-native";
 import { RectButton, PanGestureHandler } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,6 +12,8 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { synchronize } from "@nozbe/watermelondb/sync";
+import { database } from "../../database";
 
 const ButtonAnimated = Animated.createAnimatedComponent(RectButton);
 
@@ -21,13 +23,13 @@ import { CarDTO } from "../../dtos/CarDTO";
 import LogoSVG from "../../assets/logo.svg";
 
 import { Car } from "../../components/Car";
+import { Car as ModelCar } from "../../database/model/Car";
 
 import { Container, Header, HeaderContent, TotalCars, CarList } from "./styles";
-import { Loading } from "../../components/Loading";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
 
 export function Home() {
-  const [cars, setCars] = useState<CarDTO[]>([]);
+  const [cars, setCars] = useState<ModelCar[]>([]);
   const [loading, setLoading] = useState(true);
 
   const navigation = useNavigation();
@@ -79,14 +81,52 @@ export function Home() {
       })
     );
   }
+  async function offlineSynchronize() {
+    await synchronize({
+      database,
+      pullChanges: async ({ lastPulledAt }) => {
+        const response = await api.get(
+          `cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`
+        );
+
+        const { changes, latestVersion } = response.data;
+        return { changes, timestamp: latestVersion };
+      },
+      pushChanges: async ({ changes }) => {
+        const user = changes.users;
+        await api.post("/users/sync", user);
+      },
+    });
+  }
 
   useEffect(() => {
     let isMounted = true;
+    /*
+      Buscando os dados direto na API
+   
     async function fetchCars() {
       try {
         const response = await api.get("cars");
         if (isMounted) {
           setCars(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+    fetchCars();*/
+
+    async function fetchCars() {
+      try {
+        const carCollection = database.get<ModelCar>("cars");
+        const cars = await carCollection.query().fetch();
+        console.log("CAAAARS", cars);
+        if (isMounted) {
+          setCars(cars);
         }
       } catch (error) {
         console.log(error);
@@ -102,18 +142,24 @@ export function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (netInfo.isConnected === true) {
+      offlineSynchronize();
+    }
+  }, [netInfo.isConnected]);
   // useEffect(() => {
   //   BackHandler.addEventListener("hardwareBackPress", () => {
   //     return true;
   //   });
   // }, []);
-  useEffect(() => {
-    if (netInfo.isConnected) {
-      Alert.alert("Voce tem conexão");
-    } else {
-      Alert.alert("Voce sem conexao");
-    }
-  }, [netInfo.isConnected]);
+  // useEffect(() => {
+  //   if (netInfo.isConnected) {
+  //     Alert.alert("Voce tem conexão");
+  //   } else {
+  //     Alert.alert("Voce sem conexao");
+  //   }
+  // }, [netInfo.isConnected]);
+
   return (
     <Container>
       <StatusBar
